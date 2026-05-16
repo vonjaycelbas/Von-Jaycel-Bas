@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('darkbg.jpg') no-repeat center center/cover;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      animation: slideDown 1s ease;
+    }
+
+    header h1 {
+      color: #25d9f8;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #25d9f8;
+    }
+
+    .contact-container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 50px auto;
+      background: rgba(0,0,0,0.7);
+      padding: 40px;
+      border-radius: 15px;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeSlideUp 1s forwards;
+    }
+
+    .contact-container h2 {
+      font-size: 36px;
+      color: #25d9f8;
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeSlideDown 0.8s forwards 0.2s;
+    }
+
+    .contact-container p {
+      font-size: 16px;
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeIn 0.8s forwards 0.4s;
+    }
+
+    .contact-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .info-box {
+      flex: 1;
+      min-width: 250px;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeSlideUp 0.8s forwards;
+    }
+
+    .info-box:nth-child(1) { animation-delay: 0.5s; }
+    .info-box:nth-child(2) { animation-delay: 0.7s; }
+    .info-box:nth-child(3) { animation-delay: 0.9s; }
+
+    .info-box p {
+      margin: 10px 0 0;
+      font-size: 16px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeSlideUp 0.8s forwards 1.1s;
+    }
+
+    form input, form textarea {
+      padding: 15px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      opacity: 0;
+      transform: translateX(-50px);
+      animation: fadeSlideRight 0.5s forwards;
+    }
+
+    form input:nth-child(1) { animation-delay: 1.2s; }
+    form input:nth-child(2) { animation-delay: 1.4s; }
+    form textarea { animation-delay: 1.6s; }
+
+    .submit-btn {
+      padding: 15px;
+      background: #25d9f8;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: popIn 0.5s forwards 1.8s;
+    }
+
+    .submit-btn:hover {
+      background: #1ab0e0;
+    }
+
+    /* Animations */
+    @keyframes fadeSlideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideDown {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideRight {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>G3 Gadget</h1>
+  <nav>
+    <a href="HomePage.html">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="Contact.html">Contact</a>
+    <a href="products.html">PRODUCTS</a>
+    <a href="cart.html">CART <span style="color:red;">0</span></a>
+    <a href="checkout.html">Checkout</a>
+    <a href="login.html">LOGOUT</a>
+  </nav>
+</header>
+
+<div class="contact-container">
+  <h2>Contact Us</h2>
+  <p>We value your interest and involvement in the G3 Gadget community. If you have questions, need support, or want to learn more, reach out using the form below.</p>
+
+  <div class="contact-info">
+    <div class="info-box">
+      <strong>🏠Address:</strong>
+      <p>7 Garcia street</p>
+    </div>
+    <div class="info-box">
+      <strong>📞Phone:</strong>
+      <p>09561794100</p>
+    </div>
+    <div class="info-box">
+      <strong>📩Email:</strong>
+      <p>g3gadget@gmail.com</p>
+    </div>
+  </div>
+
+  <form onsubmit="submitForm(event)">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="email" id="email" placeholder="Your Email" required>
+    <textarea id="message" placeholder="Your Message" required></textarea>
+    <button type="submit" class="submit-btn">Send Message</button>
+  </form>
+</div>
+
+<script>
+  function submitForm(e) {
+    e.preventDefault();
+    alert('Thank you for contacting us! We will respond within 48 hours.');
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('message').value = '';
+  }
+</script>
+
+</body>
+</html>

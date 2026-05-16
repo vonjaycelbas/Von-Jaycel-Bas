@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Form</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url("darkbg.jpg") center;
+      background-size: cover;
+    }
+
+    .main-box {
+      background-color: white;
+      padding: 20px;
+      border: 3px solid blue;
+      width: 280px;
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .box {
+      border: 2px solid blue;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: white;
+    }
+
+    .box-title {
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+      background: blue;
+    }
+
+    .form-group input {
+      width: 90%;
+      padding: 5px;
+      height: 28px;
+      margin: auto;
+      display: block;
+      border: 1px solid black;
+    }
+
+    .button-group input {
+      width: 110px;
+      padding: 7px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .register-btn {
+      background-color: blue;
+      color: white;
+    }
+
+    .cancel-btn {
+      background-color: gray;
+    }
+
+    .register-btn:hover { 
+      background-color: blue; 
+      transform: scale(1.05); 
+    } 
+
+    .cancel-btn:hover { 
+      background-color: red; 
+      transform: scale(1.05); 
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .back-link a {
+      color: blue;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+
+  <form class="main-box" onsubmit="saveData(); return false;">
+    <div class="box">
+      <div class="box-title">REGISTRATION</div>
+    </div>
+
+    <div class="box">
+      <div class="form-group">
+        <label>Username:</label>
+        <input type="text" id="regUser" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" id="regPass" required>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="button-group">
+        <input type="submit" value="Register" class="register-btn">
+        <input type="reset" value="Clear" class="cancel-btn">
+      </div>
+     <div class="back-link">
+        <p>Already have an account? <a href="Login.html">Back to Login</a></p>
+      </div>
+    </div>
+  </form>
+
+  <script>
+    function saveData() {
+      let username = document.getElementById("regUser").value;
+      let password = document.getElementById("regPass").value;
+
+      // Save to localStorage
+      localStorage.setItem("savedUser", username);
+      localStorage.setItem("savedPass", password);
+
+      window.location.href = "succesful.html";
+    }
+  </script>
+
+</body>
+</html>

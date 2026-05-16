@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('darkbg.jpg') no-repeat center center/cover;
+      color: white;
+      animation: fadeInBg 1.2s ease-in-out;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      animation: slideDown 1s ease-in-out;
+    }
+    h1 { color: #25d9f8; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    nav a:hover { color: #25d9f8; }
+
+    .cart-container {
+      width: 80%;
+      margin: 40px auto;
+      background: rgba(0,0,0,0.6);
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      gap: 15px;
+    }
+
+    .cart-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .cart-details {
+      flex-grow: 1;
+    }
+
+    .cart-details h3 { margin: 0; }
+    .cart-details p { margin: 5px 0; }
+
+    .remove-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .checkout-btn {
+      background: #25d9f8;
+      color: black;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .home-btn {
+      position: absolute;
+      top: 5px;
+      left: 30px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 10px 18px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 10px;
+    }
+
+    .home-btn:hover {
+      background: #25d9f8;
+    }
+
+    @keyframes fadeInBg { from {opacity:0;} to {opacity:1;} }
+    @keyframes slideDown { from {transform:translateY(-50px); opacity:0;} to {transform:translateY(0); opacity:1;} }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="products.html" class="home-btn">←</a>
+  <h1>G3 Gadget</h1>
+  <nav>
+    <a href="HomePage.html">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="Contact.html">CONTACT</a>
+    <a href="products.html">PRODUCTS</a>
+    <a href="cart.html">CART <span id="cartCount" style="color:red;">0</span></a>
+    <a href="checkout.html">CHECKOUT</a>
+    <a href="login.html">LOGOUT</a>
+  </nav>
+</header>
+
+<h1 style="text-align:center; margin-top: 20px;">Your Cart</h1>
+
+<div class="cart-container" id="cartContainer">
+  <!-- Cart items will appear here -->
+</div>
+
+<script>
+  // Load cart from localStorage
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartContainer = document.getElementById("cartContainer");
+  const cartCount = document.getElementById("cartCount");
+
+  // --------------------------------------------------
+  // Proceed order for one specific cart item
+  // --------------------------------------------------
+  function proceedSingleOrder(index) {
+    const item = cart[index];
+    localStorage.setItem("checkoutItem", JSON.stringify(item));
+    window.location.href = "checkout.html";
+  }
+
+  function updateCart() {
+    cartContainer.innerHTML = "";
+    let total = 0;
+
+    if(cart.length === 0) {
+      cartContainer.innerHTML = "<p style='text-align:center;'>Your cart is empty.</p>";
+      cartCount.innerText = 0;
+      return;
+    }
+
+    cart.forEach((item, index) => {
+      total += item.price;
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <img src="${item.img || 'placeholder.png'}" alt="${item.name}">
+        <div class="cart-details">
+          <h3>${item.name}</h3>
+          <p>₱${item.price.toLocaleString()}</p>
+        </div>
+        <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+        <button class="checkout-btn" onclick="proceedSingleOrder(${index})">Proceed Order</button>
+      `;
+      cartContainer.appendChild(div);
+    });
+
+    const totalDiv = document.createElement("div");
+    totalDiv.style.textAlign = "right";
+    totalDiv.style.fontSize = "20px";
+    totalDiv.style.fontWeight = "bold";
+    totalDiv.style.marginTop = "15px";
+    totalDiv.innerText = `Total: ₱${total.toLocaleString()}`;
+    cartContainer.appendChild(totalDiv);
+
+    cartCount.innerText = cart.length;
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCart();
+  }
+
+  updateCart();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('darkbg.jpg') no-repeat center center/cover;
+      color: white;
+      animation: fadeInBg 1.2s ease-in-out;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      animation: slideDown 1s ease-in-out;
+    }
+
+    h1 {
+      color: #25d9f8;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #25d9f8;
+    }
+
+    /* SEARCH BAR */
+    .search-box {
+      width: 90%;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .search-box input {
+      width: 60%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+    }
+
+    /* PRODUCT GRID (4-items per row) */
+    .product-container {
+      width: 95%;
+      margin: 40px auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+    }
+
+    .product-card {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      animation: fadeUp 1s ease-in-out;
+    }
+
+   .product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 25px #25d9f8;
+}
+
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .product-card button {
+      padding: 12px;
+      background: #25d9f8;
+      border: none;
+      width: 100%;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+   
+
+    @keyframes fadeInBg { from {opacity:0;} to {opacity:1;} }
+    @keyframes slideDown { from {transform:translateY(-50px); opacity:0;} to {transform:translateY(0); opacity:1;} }
+    @keyframes fadeUp { from {transform:translateY(50px); opacity:0;} to {transform:translateY(0); opacity:1;} }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>G3 Gadget</h1>
+  <nav>
+    <a href="HomePage.html">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="Contact.html">CONTACT</a>
+    <a href="products.html">PRODUCTS</a>
+    <a href="cart.html">CART <span id="cartCount" style="color:red;">0</span></a>
+    <a href="checkout.html">CHECKOUT</a>
+    <a href="login.html">LOGOUT</a>
+  </nav>
+</header>
+
+<h1 style="text-align:center; margin-top: 20px;">Our Products</h1>
+
+<!-- SEARCH BAR -->
+<div class="search-box">
+  <input type="text" id="searchInput" placeholder="Search product..." onkeyup="searchProduct()">
+</div>
+
+<!-- PRODUCT GRID -->
+<div class="product-container" id="productList">
+
+<!-- ROW 1 – 4 PRODUCTS -->
+<div class="product-card" data-name="Gaming Laptop" data-price="78999" data-img="laptop.png">
+  <img src="laptop.png">
+  <h3>Gaming Laptop</h3>
+  <p>₱78,999</p>
+  <a href="productdetails.html?name=Gaming Laptop&price=78999&img=laptop.png&desc=High-performance gaming laptop with RGB keyboard."><button>View Details</button></a>
+  <button onclick="addToCart('Gaming Laptop', 78999, 'laptop.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Wireless Headset" data-price="1899" data-img="headset.png">
+  <img src="headset.png">
+  <h3>Wireless Headset</h3>
+  <p>₱1,899</p>
+  <a href="productdetails.html?name=Wireless Headset&price=1899&img=headset.png&desc=Surround sound wireless gaming headset."><button>View Details</button></a>
+  <button onclick="addToCart('Wireless Headset', 1899, 'headset.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Gaming Mouse" data-price="1199" data-img="mouse.png">
+  <img src="mouse.png">
+  <h3>Gaming Mouse</h3>
+  <p>₱1,199</p>
+  <a href="productdetails.html?name=Gaming Mouse&price=1199&img=mouse.png&desc=High precision RGB gaming mouse."><button>View Details</button></a>
+  <button onclick="addToCart('Gaming Mouse', 1199, 'mouse.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Smartphone Pro Max" data-price="45999" data-img="phone.png">
+  <img src="phone.png">
+  <h3>Smartphone Pro Max</h3>
+  <p>₱45,999</p>
+  <a href="productdetails.html?name=Smartphone Pro Max&price=45999&img=phone.png&desc=High-end smartphone with advanced cameras."><button>View Details</button></a>
+  <button onclick="addToCart('Smartphone Pro Max', 45999, 'phone.png')">Add to Cart</button>
+</div>
+
+ <div class="product-card" data-name="Mechanical Keyboard" data-price="2499" data-img="keyboard.png">
+  <img src="keyboard.png">
+  <h3>Mechanical Keyboard</h3>
+  <p>₱2,499</p>
+  <a href="productdetails.html?name=Mechanical Keyboard&price=2499&img=keyboard.png&desc=RGB mechanical keyboard with blue switches.">
+    <button>View Details</button>
+  </a>
+  <button onclick="addToCart('Mechanical Keyboard', 2499, 'keyboard.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Smartwatch Series X" data-price="3299" data-img="smartwatch.png">
+  <img src="smartwatch.png">
+  <h3>Smartwatch Series X</h3>
+  <p>₱3,299</p>
+  <a href="productdetails.html?name=Smartwatch Series X&price=3299&img=smartwatch.png&desc=Fitness tracking smartwatch with HD screen.">
+    <button>View Details</button>
+  </a>
+  <button onclick="addToCart('Smartwatch Series X', 3299, 'smartwatch.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Bluetooth Speaker" data-price="1599" data-img="speaker.png">
+  <img src="speaker.png">
+  <h3>Bluetooth Speaker</h3>
+  <p>₱1,599</p>
+  <a href="productdetails.html?name=Bluetooth Speaker&price=1599&img=speaker.png&desc=Portable speaker with deep bass and LED lights.">
+    <button>View Details</button>
+  </a>
+  <button onclick="addToCart('Bluetooth Speaker', 1599, 'speaker.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Gaming Chair" data-price="5999" data-img="chair.png">
+  <img src="chair.png">
+  <h3>Gaming Chair</h3>
+  <p>₱5,999</p>
+  <a href="productdetails.html?name=Gaming Chair&price=5999&img=chair.png&desc=Ergonomic gaming chair with recline support.">
+    <button>View Details</button>
+  </a>
+  <button onclick="addToCart('Gaming Chair', 5999, 'chair.png')">Add to Cart</button>
+</div>
+
+
+<!-- ROW 2 – 4 MORE PRODUCTS -->
+<div class="product-card" data-name="Gaming Mouse" data-price="999" data-img="gamingmouse.png">
+  <img src="gamingmouse.png">
+  <h3>Gaming Mouse</h3>
+  <p>₱999</p>
+  <a href="productdetails.html?name=Gaming Mouse&price=999&img=gamingmouse.png&desc=Gaming Mouse best smooth movement."><button>View Details</button></a>
+  <button onclick="addToCart('Gaming mouse', 999, 'gamingmouse.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Tablet X10" data-price="12999" data-img="tablet.png">
+  <img src="tablet.png">
+  <h3>Tablet X10</h3>
+  <p>₱12,999</p>
+  <a href="productdetails.html?name=Tablet X10&price=12999&img=tablet.png&desc=Powerful tablet for work and gaming."><button>View Details</button></a>
+  <button onclick="addToCart('Tablet X10', 12999, 'tablet.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Gaming Headphone" data-price="2999" data-img="gamingheadphone.png">
+  <img src="gamingheadphone.png">
+  <h3>Gaming Headphone</h3>
+  <p>₱2,999</p>
+  <a href="productdetails.html?name=Gaming Headphone&price=2999&img=gamingheadphone.png&desc=Good for gaming best hearing experience, painless wearing."><button>View Details</button></a>
+  <button onclick="addToCart('Gaming Headphone', 2999, 'gamingheadphone.png')">Add to Cart</button>
+</div>
+
+<div class="product-card" data-name="Portable Speaker" data-price="899" data-img="speaker.png">
+  <img src="speaker.png">
+  <h3>Portable Speaker</h3>
+  <p>₱899</p>
+  <a href="productdetails.html?name=Portable Speaker&price=899&img=speaker.png&desc=Compact Bluetooth speaker with bass."><button>View Details</button></a>
+  <button onclick="addToCart('Portable Speaker', 899, 'speaker.png')">Add to Cart</button>
+</div>
+
+</div>
+
+<!-- CART + SEARCH SCRIPT -->
+<script>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function updateCartCount() {
+    document.getElementById("cartCount").innerText = cart.length;
+  }
+  updateCartCount();
+
+  function addToCart(name, price, img) {
+    cart.push({ name, price, img });
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    alert(`${name} added to cart!`);
+  }
+
+  function searchProduct() {
+  let input = document.getElementById("searchInput").value.toLowerCase();
+  let products = document.querySelectorAll(".product-card");
+
+  products.forEach(p => {
+    let name = p.getAttribute("data-name").toLowerCase();
+    p.style.display = name.includes(input) ? "block" : "none";
+  });
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('darkbg.jpg') no-repeat center center/cover;
+      color: white;
+      animation: fadeInBg 1s ease-in-out;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(5px);
+    }
+
+    h1 { color: #25d9f8; }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #25d9f8;
+    }
+
+    .checkout-container {
+      width: 80%;
+      margin: 30px auto;
+      background: rgba(0,0,0,0.65);
+      padding: 25px;
+      border-radius: 15px;
+    }
+
+    .order-summary {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .summary-item img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 15px;
+    }
+
+    .product-line {
+      display: flex;
+      align-items: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .place-order-btn {
+      width: 100%;
+      padding: 15px;
+      background: #25d9f8;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    @keyframes fadeInBg { from {opacity:0;} to {opacity:1;} }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Checkout</h1>
+  <nav>
+    <a href="HomePage.html">HOME</a>
+    <a href="products.html">BACK TO PRODUCTS</a>
+  </nav>
+</header>
+
+<div class="checkout-container">
+  <h2>Order Summary</h2>
+
+  <div id="orderSummary" class="order-summary"></div>
+
+  <h2>Shipping Information</h2>
+
+  <input type="text" id="fullName" placeholder="Full Name" required>
+  <input type="text" id="address" placeholder="Complete Address" required>
+  <input type="text" id="phone" placeholder="Phone Number" required>
+
+  <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+</div>
+
+<script>
+  // Load item from Proceed Order
+  const checkoutItem = JSON.parse(localStorage.getItem("checkoutItem"));
+
+  function loadSummary() {
+    const summaryDiv = document.getElementById("orderSummary");
+
+    if (!checkoutItem) {
+      summaryDiv.innerHTML = "<p style='color:red;'>No item selected for checkout.</p>";
+      return;
+    }
+
+    summaryDiv.innerHTML = `
+      <div class="summary-item">
+        <div class="product-line">
+          <img src="${checkoutItem.img}">
+          <span style="font-size:18px;">${checkoutItem.name}</span>
+        </div>
+        <span style="font-size:18px;">₱${checkoutItem.price.toLocaleString()}</span>
+      </div>
+
+      <hr>
+
+      <div class="summary-item" style="font-weight:bold; font-size:20px;">
+        <span>Total:</span>
+        <span>₱${checkoutItem.price.toLocaleString()}</span>
+      </div>
+    `;
+  }
+
+  function placeOrder() {
+    let name = document.getElementById("fullName").value;
+    let address = document.getElementById("address").value;
+    let phone = document.getElementById("phone").value;
+
+    if (!name || !address || !phone) {
+      alert("Please complete all fields.");
+      return;
+    }
+
+    alert("Order placed successfully!\nThank you for shopping with us.");
+
+    localStorage.removeItem("checkoutItem");
+    window.location.href = "products.html";
+  }
+
+  loadSummary();
+</script>
+
+</body>
+</html>

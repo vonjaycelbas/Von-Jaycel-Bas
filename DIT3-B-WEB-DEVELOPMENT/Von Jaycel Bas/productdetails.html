@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('darkbg.jpg') no-repeat center center/cover;
+      color: white;
+      animation: fadeInBg 1.2s ease-in-out;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      animation: slideDown 1s ease-in-out;
+    }
+    h1 { color: #25d9f8; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    nav a:hover { color: #25d9f8; }
+
+    .product-details {
+      width: 80%;
+      margin: 40px auto;
+      display: flex;
+      gap: 40px;
+      background: rgba(0,0,0,0.6);
+      padding: 30px;
+      border-radius: 15px;
+      align-items: center;
+    }
+
+    .product-details:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px #25d9f8;
+    }
+
+    .product-details img {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .details-text {
+      max-width: 600px;
+    }
+
+    .details-text h2 {
+      color: #25d9f8;
+      margin-bottom: 15px;
+    }
+
+    .details-text p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .add-btn {
+      padding: 15px 30px;
+      background: #25d9f8;
+      border: none;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    @keyframes fadeInBg { from {opacity:0;} to {opacity:1;} }
+    @keyframes slideDown { from {transform:translateY(-50px); opacity:0;} to {transform:translateY(0); opacity:1;} }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>G3 Gadget</h1>
+  <nav>
+    <a href="HomePage.html">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="Contact.html">CONTACT</a>
+    <a href="products.html">PRODUCTS</a>
+    <a href="cart.html">CART <span id="cartCount" style="color:red;">0</span></a>
+    <a href="checkout.html">CHECKOUT</a>
+    <a href="login.html">LOGOUT</a>
+  </nav>
+</header>
+
+<div class="product-details">
+  <img id="productImage" src="laptop.png" alt="Product Image">
+  <div class="details-text">
+    <h2 id="productName">Gaming Laptop</h2>
+    <p id="productPrice">₱78,999</p>
+    <p id="productDesc">
+      High-performance gaming laptop with latest GPU, fast processor, and RGB keyboard. Perfect for gamers and creators.
+    </p>
+    <button class="add-btn" onclick="addToCart()">Add to Cart</button>
+    <button class="add-btn" style="margin-left:10px; background:#25d9f8;" onclick="proceedOrder()">Proceed Order</button>
+  </div>
+</div>
+
+<script>
+  // Function to get URL parameters
+  function getQueryParams() {
+    const params = {};
+    location.search.substring(1).split("&").forEach(pair => {
+      const [key, value] = pair.split("=");
+      params[key] = decodeURIComponent(value);
+    });
+    return params;
+  }
+
+  const params = getQueryParams();
+
+  // Set product info dynamically
+  document.getElementById("productName").innerText = params.name || "Product Name";
+  document.getElementById("productPrice").innerText =
+    params.price ? `₱${parseInt(params.price).toLocaleString()}` : "₱0";
+  document.getElementById("productImage").src = params.img || "placeholder.png";
+  document.getElementById("productDesc").innerText =
+    params.desc || "Product description here.";
+
+  // Cart
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  function updateCartCount() {
+    document.getElementById("cartCount").innerText = cart.length;
+  }
+  updateCartCount();
+
+  // -------------------------------
+  // Updated addToCart: includes image
+  // -------------------------------
+  function addToCart() {
+    const name = document.getElementById("productName").innerText;
+    const price = parseInt(
+      document.getElementById("productPrice").innerText.replace(/₱|,/g, "")
+    );
+    const img = document.getElementById("productImage").src;
+
+    // Add full product to cart
+    cart.push({ name, price, img });
+    // Save to localStorage
+    localStorage.setItem("cart", JSON.stringify(cart)); // standard API method. :contentReference[oaicite:0]{index=0}
+
+    updateCartCount();
+    alert(`${name} added to cart!`);
+  }
+
+  // Proceed to checkout for single item
+  function proceedOrder() {
+    const name = document.getElementById("productName").innerText;
+    const price = parseInt(
+      document.getElementById("productPrice").innerText.replace(/₱|,/g, "")
+    );
+    const img = document.getElementById("productImage").src;
+
+    localStorage.setItem("checkoutItem", JSON.stringify({ name, price, img }));
+    window.location.href = "checkout.html";
+  }
+</script>
+
+</body>
+</html>
