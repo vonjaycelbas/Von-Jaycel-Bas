@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Round Robin Scheduler</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+        margin: 0; 
+      padding: 0; 
+      font-family: Arial, sans-serif;
+      background: url("darkbg.jpg") center;
+      background-size: cover;
+      color: white;
+      animation: fadeInBg 2s ease-in forwards;
+
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .inputs {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    input {
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        background: #2a2a3d;
+        color: white;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        background: #4cafef;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #2196f3;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background: #2a2a3d;
+    }
+
+    tr:nth-child(even) {
+        background: rgba(255,255,255,0.05);
+    }
+
+    .metrics {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .metric-box {
+        background: #2a2a3d;
+        padding: 15px;
+        border-radius: 10px;
+        width: 45%;
+    }
+
+    .gantt {
+        margin-top: 15px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .block {
+        padding: 10px;
+        background: #4cafef;
+        margin: 5px;
+        border-radius: 5px;
+        min-width: 50px;
+        text-align: center;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>⚙️ Round Robin Scheduler</h1>
+
+    <div class="card">
+        <div class="inputs">
+            <input type="text" id="pname" placeholder="Process Name">
+            <input type="number" id="arrival" placeholder="Arrival Time">
+            <input type="number" id="burst" placeholder="Burst Time">
+            <button onclick="addProcess()">Add</button>
+            <button onclick="clearData()">Clear Data</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <label>Time Quantum:</label>
+        <input type="number" id="quantum" value="2">
+        <button onclick="runRR()">Calculate</button>
+       	<button onclick="exportPDF()">Export PDF</button>
+    </div>
+
+    <div class="card">
+        <h3>Process Table</h3>
+        <table id="table">
+            <tr>
+                <th>Process</th>
+                <th>Arrival</th>
+                <th>Burst</th>
+                <th>Completion</th>
+                <th>Turnaround</th>
+                <th>Waiting</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Gantt Chart</h3>
+        <div class="gantt" id="gantt"></div>
+    </div>
+
+    <div class="card">
+        <h3>Metrics</h3>
+        <div class="metrics">
+            <div class="metric-box">
+                <h4>Avg Waiting Time</h4>
+                <p id="avgWT">0</p>
+            </div>
+            <div class="metric-box">
+                <h4>Avg Turnaround Time</h4>
+                <p id="avgTAT">0</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+let processes = JSON.parse(localStorage.getItem("rr_processes")) || [];
+
+window.onload = function () {
+    renderTable();
+};
+
+function saveData() {
+    localStorage.setItem("rr_processes", JSON.stringify(processes));
+}
+
+// ✅ ADD PROCESS
+function addProcess() {
+    let name = document.getElementById("pname").value.trim();
+    let arrivalVal = parseInt(document.getElementById("arrival").value);
+    let burstVal = parseInt(document.getElementById("burst").value);
+
+    if (!name || isNaN(arrivalVal) || isNaN(burstVal) || burstVal <= 0) {
+        alert("Fill all fields correctly!");
+        return;
+    }
+
+    processes.push({
+        name,
+        arrival: arrivalVal,
+        burst: burstVal
+    });
+
+    saveData();
+    renderTable();
+}
+
+// ✅ EDIT FUNCTION (FIXED)
+function edit(index, field, value) {
+    if (field === "name") {
+        processes[index][field] = value.trim();
+    } else {
+        let num = parseInt(value);
+        if (!isNaN(num) && num >= 0) {
+            processes[index][field] = num;
+        }
+    }
+    saveData();
+}
+
+// ✅ DELETE
+function deleteProcess(index) {
+    processes.splice(index, 1);
+    saveData();
+    renderTable();
+}
+
+// ✅ RENDER TABLE
+function renderTable() {
+    let table = document.getElementById("table");
+
+    table.innerHTML = `
+        <tr>
+            <th>Process</th>
+            <th>Arrival</th>
+            <th>Burst</th>
+            <th>Completion</th>
+            <th>Turnaround</th>
+            <th>Waiting</th>
+            <th>Action</th>
+        </tr>
+    `;
+
+    processes.forEach((p, i) => {
+        table.innerHTML += `
+            <tr>
+                <td contenteditable onblur="edit(${i},'name',this.innerText)">${p.name}</td>
+                <td contenteditable onblur="edit(${i},'arrival',this.innerText)">${p.arrival}</td>
+                <td contenteditable onblur="edit(${i},'burst',this.innerText)">${p.burst}</td>
+                <td>${p.completion ?? "-"}</td>
+                <td>${p.turnaround ?? "-"}</td>
+                <td>${p.waiting ?? "-"}</td>
+                <td><button onclick="deleteProcess(${i})">❌</button></td>
+            </tr>
+        `;
+    });
+}
+
+// ✅ ROUND ROBIN (FULL FIX)
+function runRR() {
+    let q = parseInt(document.getElementById("quantum").value);
+    if (isNaN(q) || q <= 0) {
+        alert("Invalid quantum!");
+        return;
+    }
+
+    let time = 0;
+    let gantt = document.getElementById("gantt");
+    gantt.innerHTML = "";
+
+    let proc = processes.map(p => ({
+        ...p,
+        remaining: p.burst,
+        completion: 0,
+        turnaround: 0,
+        waiting: 0
+    }));
+
+    proc.sort((a, b) => a.arrival - b.arrival);
+
+    let queue = [];
+    let i = 0;
+
+    while (i < proc.length || queue.length > 0) {
+
+        // add arrived processes
+        while (i < proc.length && proc[i].arrival <= time) {
+            queue.push(proc[i]);
+            i++;
+        }
+
+        // CPU IDLE FIX
+        if (queue.length === 0) {
+            gantt.innerHTML += `<div class="block">Idle<br>${time}-${time+1}</div>`;
+            time++;
+            continue;
+        }
+
+        let current = queue.shift();
+        let exec = Math.min(q, current.remaining);
+
+        gantt.innerHTML += `<div class="block">${current.name}<br>${time}-${time+exec}</div>`;
+
+        time += exec;
+        current.remaining -= exec;
+
+        // add newly arrived during execution
+        while (i < proc.length && proc[i].arrival <= time) {
+            queue.push(proc[i]);
+            i++;
+        }
+
+        if (current.remaining > 0) {
+            queue.push(current);
+        } else {
+            current.completion = time;
+            current.turnaround = time - current.arrival;
+            current.waiting = current.turnaround - current.burst;
+        }
+    }
+
+    // copy results back
+    proc.forEach(p => {
+        let original = processes.find(x => x.name === p.name && x.arrival === p.arrival);
+        Object.assign(original, p);
+    });
+
+    updateTable();
+    saveData();
+}
+
+// ✅ METRICS
+function updateTable() {
+    let totalWT = 0, totalTAT = 0;
+
+    processes.forEach(p => {
+        totalWT += p.waiting || 0;
+        totalTAT += p.turnaround || 0;
+    });
+
+    renderTable();
+
+    document.getElementById("avgWT").innerText =
+        (processes.length ? totalWT / processes.length : 0).toFixed(2);
+
+    document.getElementById("avgTAT").innerText =
+        (processes.length ? totalTAT / processes.length : 0).toFixed(2);
+}
+
+// ✅ CLEAR
+function clearData() {
+    if (confirm("Clear all data?")) {
+        localStorage.removeItem("rr_processes");
+        processes = [];
+        renderTable();
+        document.getElementById("gantt").innerHTML = "";
+        document.getElementById("avgWT").innerText = "0";
+        document.getElementById("avgTAT").innerText = "0";
+    }
+}
+
+// ✅ EXPORT PDF (unchanged but safer)
+function exportPDF() {
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF();
+
+    let y = 10;
+    doc.text("Round Robin Results", 10, y);
+    y += 10;
+
+    processes.forEach(p => {
+        doc.text(
+            `${p.name} | AT:${p.arrival} BT:${p.burst} WT:${p.waiting ?? 0} TAT:${p.turnaround ?? 0}`,
+            10, y
+        );
+        y += 8;
+    });
+
+    doc.text(`Avg WT: ${document.getElementById("avgWT").innerText}`,10,y+5);
+    doc.text(`Avg TAT: ${document.getElementById("avgTAT").innerText}`,10,y+10);
+
+    doc.save("RR_Report.pdf");
+}
+</script>
+</body>
+</html>
